@@ -38,5 +38,26 @@ services:
       python run_health_check.py &&
       python load_warehouse.py"
 
+  airflow:
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
+    container_name: sentinellake-airflow
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+      SENTINELLAKE_DATABASE_URL: postgresql://sentinellake:sentinellake_dev_password@postgres:5432/sentinellake
+    ports:
+      - "8080:8080"
+    volumes:
+      - airflow_data:/opt/airflow
+      - ./dags:/opt/airflow/dags
+      - ./:/opt/sentinellake
+    command: standalone
+
 volumes:
   sentinellake_postgres_data:
+  airflow_data:
