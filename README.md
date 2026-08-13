@@ -15,6 +15,7 @@ SentinelLake can:
   - Number of unique non-empty values
 - Validate an `age` column when it exists
   - A non-blank age must be a whole number from 0 to 120
+- Save the analysis as a JSON report file
 - Show a friendly error when the CSV file path does not exist
 
 ## Usage
