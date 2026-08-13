@@ -1,0 +1,6 @@
+customer_id,name,email,age,city
+1,Aarav Sharma,aarav@example.com,29,Mumbai
+2,Meera Iyer,,34,Bengaluru
+3,Kabir Khan,kabir@example.com,,Delhi
+2,Meera Iyer,,34,Bengaluru
+5,Ananya Das,ananya@example.com,27,

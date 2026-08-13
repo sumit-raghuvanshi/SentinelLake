@@ -1,0 +1,1 @@
+"""SentinelLake: a simple CSV data-quality checker."""
