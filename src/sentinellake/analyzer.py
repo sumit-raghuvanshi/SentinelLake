@@ -15,7 +15,10 @@ def analyze_csv(file_path: str | Path) -> dict[str, object]:
         rows = list(reader)
 
     missing_values = {
-        column: sum(row.get(column, "") == "" for row in rows)
+        column: sum(
+            (row.get(column, "") or "").strip() == ""
+            for row in rows
+        )
         for column in columns
     }
 
@@ -29,9 +32,26 @@ def analyze_csv(file_path: str | Path) -> dict[str, object]:
         if count > 1
     )
 
+    invalid_ages = 0
+    for row in rows:
+        age_text = (row.get("age", "") or "").strip()
+
+        if age_text == "":
+            continue
+
+        try:
+            age = int(age_text)
+        except ValueError:
+            invalid_ages += 1
+            continue
+
+        if age < 0 or age > 120:
+            invalid_ages += 1
+
     return {
         "total_rows": len(rows),
         "columns": columns,
         "missing_values": missing_values,
         "duplicate_rows": duplicate_rows,
+        "invalid_ages": invalid_ages,
     }

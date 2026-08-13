@@ -1,0 +1,5 @@
+customer_id,name,email,age,city
+10,Dev Patel,dev@example.com,unknown,Pune
+11,Isha Gupta,isha@example.com,-3,Kolkata
+12,Rohan Verma,rohan@example.com,151,Jaipur
+13,Nina Shah,nina@example.com,35,Surat
