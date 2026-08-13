@@ -1,0 +1,45 @@
+
+[
+  {
+    "ioc_type": "ipv4",
+    "ioc_value": "999.220.101.34",
+    "threat_category": "malware",
+    "confidence_score": 95,
+    "first_seen": "2026-08-13T06:00:00Z",
+    "last_seen": "2026-08-13T09:00:00Z",
+    "source_name": "demo_ip_feed",
+    "source_record_id": "ip-1003",
+    "ingested_at": "2026-08-13T08:50:58.554902Z",
+    "raw_record": {
+      "indicator": "999.220.101.34",
+      "category": "malware",
+      "confidence": "95",
+      "first_observed": "2026-08-13T06:00:00Z",
+      "last_observed": "2026-08-13T09:00:00Z",
+      "feed_id": "ip-1003"
+    },
+    "validation_status": "quarantined",
+    "quarantine_reason": "invalid_ipv4_format"
+  },
+  {
+    "ioc_type": "domain",
+    "ioc_value": "bad domain",
+    "threat_category": "phishing",
+    "confidence_score": 110,
+    "first_seen": "2026-08-13T07:00:00Z",
+    "last_seen": "2026-08-13T09:00:00Z",
+    "source_name": "demo_domain_feed",
+    "source_record_id": "domain-2003",
+    "ingested_at": "2026-08-13T08:50:58.554910Z",
+    "raw_record": {
+      "domain": "bad domain",
+      "classification": "phishing",
+      "score": 110,
+      "first_seen_at": "2026-08-13T07:00:00Z",
+      "last_seen_at": "2026-08-13T09:00:00Z",
+      "id": "domain-2003"
+    },
+    "validation_status": "quarantined",
+    "quarantine_reason": "invalid_domain_format"
+  }
+]

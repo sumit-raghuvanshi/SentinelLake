@@ -1,0 +1,86 @@
+[
+  {
+    "ioc_type": "ipv4",
+    "ioc_value": "185.220.101.34",
+    "threat_category": "malware",
+    "confidence_score": 85,
+    "first_seen": "2026-08-13T08:00:00Z",
+    "last_seen": "2026-08-13T09:00:00Z",
+    "source_name": "demo_ip_feed",
+    "source_record_id": "ip-1001",
+    "ingested_at": "2026-08-13T08:50:58.554882Z",
+    "raw_record": {
+      "indicator": "185.220.101.34",
+      "category": "malware",
+      "confidence": "85",
+      "first_observed": "2026-08-13T08:00:00Z",
+      "last_observed": "2026-08-13T09:00:00Z",
+      "feed_id": "ip-1001"
+    },
+    "validation_status": "accepted",
+    "quarantine_reason": null
+  },
+  {
+    "ioc_type": "ipv4",
+    "ioc_value": "45.155.205.233",
+    "threat_category": "botnet",
+    "confidence_score": 70,
+    "first_seen": "2026-08-13T07:00:00Z",
+    "last_seen": "2026-08-13T09:00:00Z",
+    "source_name": "demo_ip_feed",
+    "source_record_id": "ip-1002",
+    "ingested_at": "2026-08-13T08:50:58.554896Z",
+    "raw_record": {
+      "indicator": "45.155.205.233",
+      "category": "botnet",
+      "confidence": "70",
+      "first_observed": "2026-08-13T07:00:00Z",
+      "last_observed": "2026-08-13T09:00:00Z",
+      "feed_id": "ip-1002"
+    },
+    "validation_status": "accepted",
+    "quarantine_reason": null
+  },
+  {
+    "ioc_type": "domain",
+    "ioc_value": "evil-example.net",
+    "threat_category": "phishing",
+    "confidence_score": 92,
+    "first_seen": "2026-08-13T08:30:00Z",
+    "last_seen": "2026-08-13T09:10:00Z",
+    "source_name": "demo_domain_feed",
+    "source_record_id": "domain-2001",
+    "ingested_at": "2026-08-13T08:50:58.554905Z",
+    "raw_record": {
+      "domain": "evil-example.net",
+      "classification": "phishing",
+      "score": 92,
+      "first_seen_at": "2026-08-13T08:30:00Z",
+      "last_seen_at": "2026-08-13T09:10:00Z",
+      "id": "domain-2001"
+    },
+    "validation_status": "accepted",
+    "quarantine_reason": null
+  },
+  {
+    "ioc_type": "domain",
+    "ioc_value": "malware-download.org",
+    "threat_category": "malware",
+    "confidence_score": 78,
+    "first_seen": "2026-08-13T07:30:00Z",
+    "last_seen": "2026-08-13T09:05:00Z",
+    "source_name": "demo_domain_feed",
+    "source_record_id": "domain-2002",
+    "ingested_at": "2026-08-13T08:50:58.554908Z",
+    "raw_record": {
+      "domain": "malware-download.org",
+      "classification": "malware",
+      "score": 78,
+      "first_seen_at": "2026-08-13T07:30:00Z",
+      "last_seen_at": "2026-08-13T09:05:00Z",
+      "id": "domain-2002"
+    },
+    "validation_status": "accepted",
+    "quarantine_reason": null
+  }
+]

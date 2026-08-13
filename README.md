@@ -1,35 +1,34 @@
 # SentinelLake
 
-SentinelLake is a beginner-friendly Python tool for checking the quality of CSV data.
+SentinelLake is a local Python MVP for a cyber threat-intelligence data pipeline.
 
-## Current capabilities
+It ingests threat-feed data from multiple source formats, normalizes records into one canonical Indicator of Compromise (IOC) schema, validates data quality, and separates accepted records from quarantined records.
 
-SentinelLake can:
+## Current MVP capabilities
 
-- Read a UTF-8, comma-separated CSV file with a header row
-- Reject an empty CSV file or a CSV file without a header row
-- Show the total number of rows and column names
-- Count blank values in every column
-- Count exact duplicate rows
-- Show a profile for every column
-  - Number of non-empty values
-  - Number of unique non-empty values
-- Check selected columns for repeated non-empty values
-- Check selected required columns for blank values
-  - Show the row numbers with missing required values
-- Validate an `age` column when it exists
-  - A non-blank age must be a whole number from 0 to 120
-  - Show the row number and value for invalid ages
-- Perform a basic format check for non-blank `email` values
-  - Show the row number and value for invalid emails
-  - This does not verify that an email account exists or can receive messages
-- Save the analysis as a JSON report file
-- Show friendly errors for missing files, folders, invalid CSV input, and unknown selected columns
-- Run automated tests on GitHub whenever changes are pushed to `main`
+- Ingest a CSV IP reputation feed and a JSON domain watchlist feed
+- Preserve each raw source record for traceability
+- Normalize source-specific fields into a canonical IOC schema
+- Validate:
+  - IPv4 addresses
+  - Domain names
+  - IOC types
+  - Required IOC values
+  - Source names and ingestion timestamps
+  - Confidence scores from 0 to 100
+- Quarantine invalid records with a stored rejection reason
+- Save accepted records, quarantined records, and pipeline metrics as JSON files
+- Track pipeline metrics:
+  - Sources processed
+  - Records ingested
+  - Records accepted
+  - Records quarantined
+  - Processing duration
+- Run automated tests locally and through GitHub Actions
 
-## Usage
+## Run the threat-intelligence pipeline
 
 From the SentinelLake project folder:
 
 ```text
-python run_analysis.py data\sample_customers.csv
+python run_threat_pipeline.py

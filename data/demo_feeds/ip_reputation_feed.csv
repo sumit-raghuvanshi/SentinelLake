@@ -1,0 +1,4 @@
+indicator,category,confidence,first_observed,last_observed,feed_id
+185.220.101.34,malware,85,2026-08-13T08:00:00Z,2026-08-13T09:00:00Z,ip-1001
+45.155.205.233,botnet,70,2026-08-13T07:00:00Z,2026-08-13T09:00:00Z,ip-1002
+999.220.101.34,malware,95,2026-08-13T06:00:00Z,2026-08-13T09:00:00Z,ip-1003

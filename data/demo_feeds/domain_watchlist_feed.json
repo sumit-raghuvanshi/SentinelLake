@@ -1,0 +1,26 @@
+[
+  {
+    "domain": "evil-example.net",
+    "classification": "phishing",
+    "score": 92,
+    "first_seen_at": "2026-08-13T08:30:00Z",
+    "last_seen_at": "2026-08-13T09:10:00Z",
+    "id": "domain-2001"
+  },
+  {
+    "domain": "malware-download.org",
+    "classification": "malware",
+    "score": 78,
+    "first_seen_at": "2026-08-13T07:30:00Z",
+    "last_seen_at": "2026-08-13T09:05:00Z",
+    "id": "domain-2002"
+  },
+  {
+    "domain": "bad domain",
+    "classification": "phishing",
+    "score": 110,
+    "first_seen_at": "2026-08-13T07:00:00Z",
+    "last_seen_at": "2026-08-13T09:00:00Z",
+    "id": "domain-2003"
+  }
+]

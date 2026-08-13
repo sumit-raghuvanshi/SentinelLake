@@ -1,0 +1,9 @@
+{
+  "source_count": 2,
+  "records_ingested": 6,
+  "records_accepted": 4,
+  "records_quarantined": 2,
+  "processing_duration_milliseconds": 2.17,
+  "accepted_output_path": "runtime\\latest_run\\accepted_iocs.json",
+  "quarantine_output_path": "runtime\\latest_run\\quarantined_iocs.json"
+}
