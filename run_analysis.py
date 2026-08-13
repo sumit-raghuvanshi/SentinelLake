@@ -45,6 +45,15 @@ def main() -> int:
     for column, count in report["missing_values"].items():
         print(f"  - {column}: {count}")
 
+    print("Column profiles:")
+
+    for column, profile in report["column_profiles"].items():
+        print(
+            f"  - {column}: "
+            f"{profile['non_empty_values']} non-empty, "
+            f"{profile['unique_non_empty_values']} unique"
+        )
+
     return 0
 
 

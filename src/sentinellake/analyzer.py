@@ -22,6 +22,24 @@ def analyze_csv(file_path: str | Path) -> dict[str, object]:
         for column in columns
     }
 
+    column_profiles = {}
+
+    for column in columns:
+        values = [
+            (row.get(column, "") or "").strip()
+            for row in rows
+        ]
+        non_empty_values = [
+            value
+            for value in values
+            if value != ""
+        ]
+
+        column_profiles[column] = {
+            "non_empty_values": len(non_empty_values),
+            "unique_non_empty_values": len(set(non_empty_values)),
+        }
+
     row_keys = [
         tuple(row.get(column, "") for column in columns)
         for row in rows
@@ -33,6 +51,7 @@ def analyze_csv(file_path: str | Path) -> dict[str, object]:
     )
 
     invalid_ages = 0
+
     for row in rows:
         age_text = (row.get("age", "") or "").strip()
 
@@ -52,6 +71,7 @@ def analyze_csv(file_path: str | Path) -> dict[str, object]:
         "total_rows": len(rows),
         "columns": columns,
         "missing_values": missing_values,
+        "column_profiles": column_profiles,
         "duplicate_rows": duplicate_rows,
         "invalid_ages": invalid_ages,
     }

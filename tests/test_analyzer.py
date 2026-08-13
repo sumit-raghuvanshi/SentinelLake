@@ -35,6 +35,24 @@ class AnalyzeCsvTests(unittest.TestCase):
         self.assertEqual(report["total_rows"], 4)
         self.assertEqual(report["invalid_ages"], 3)
 
+    def test_column_profiles_are_calculated(self) -> None:
+        report = analyze_csv(SAMPLE_CSV)
+
+        self.assertEqual(
+            report["column_profiles"]["customer_id"],
+            {
+                "non_empty_values": 5,
+                "unique_non_empty_values": 4,
+            },
+        )
+        self.assertEqual(
+            report["column_profiles"]["email"],
+            {
+                "non_empty_values": 3,
+                "unique_non_empty_values": 3,
+            },
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
