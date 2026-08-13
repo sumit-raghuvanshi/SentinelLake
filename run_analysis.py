@@ -22,6 +22,14 @@ def get_arguments() -> argparse.Namespace:
         type=Path,
         help="Optional path where a JSON report will be saved.",
     )
+    parser.add_argument(
+        "--unique-column",
+        action="append",
+        default=[],
+        metavar="COLUMN",
+        help="Check that non-empty values in this column are unique. "
+        "Use this option again for each additional column.",
+    )
     return parser.parse_args()
 
 
@@ -30,7 +38,10 @@ def main() -> int:
     args = get_arguments()
 
     try:
-        report = analyze_csv(args.csv_file)
+        report = analyze_csv(
+            args.csv_file,
+            unique_columns=args.unique_column,
+        )
     except FileNotFoundError:
         print(f"Error: CSV file not found: {args.csv_file}")
         return 1
@@ -62,6 +73,19 @@ def main() -> int:
             f"{profile['non_empty_values']} non-empty, "
             f"{profile['unique_non_empty_values']} unique"
         )
+
+    if report["unique_column_checks"]:
+        print("Unique column checks:")
+
+        for column, check in report["unique_column_checks"].items():
+            print(
+                f"  - {column}: "
+                f"{check['duplicate_value_count']} repeated value(s), "
+                f"{check['duplicate_value_occurrences']} extra occurrence(s)"
+            )
+
+            for value, count in check["duplicate_values"].items():
+                print(f"    - {value}: {count} rows")
 
     if args.output is not None:
         saved_path = write_json_report(report, args.output)

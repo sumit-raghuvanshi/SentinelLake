@@ -10,6 +10,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SAMPLE_CSV = PROJECT_ROOT / "data" / "sample_customers.csv"
 INVALID_AGES_CSV = PROJECT_ROOT / "data" / "invalid_ages.csv"
 INVALID_EMAILS_CSV = PROJECT_ROOT / "data" / "invalid_emails.csv"
+DUPLICATE_CUSTOMER_IDS_CSV = (
+    PROJECT_ROOT / "data" / "duplicate_customer_ids.csv"
+)
 EMPTY_CSV = PROJECT_ROOT / "data" / "empty.csv"
 
 
@@ -44,6 +47,29 @@ class AnalyzeCsvTests(unittest.TestCase):
         self.assertEqual(report["total_rows"], 5)
         self.assertEqual(report["invalid_emails"], 3)
         self.assertEqual(report["missing_values"]["email"], 1)
+
+    def test_duplicate_values_are_found_in_selected_column(self) -> None:
+        report = analyze_csv(
+            DUPLICATE_CUSTOMER_IDS_CSV,
+            unique_columns=["customer_id"],
+        )
+
+        self.assertEqual(report["duplicate_rows"], 0)
+        self.assertEqual(
+            report["unique_column_checks"]["customer_id"],
+            {
+                "duplicate_values": {"30": 2},
+                "duplicate_value_count": 1,
+                "duplicate_value_occurrences": 1,
+            },
+        )
+
+    def test_unknown_unique_column_is_rejected(self) -> None:
+        with self.assertRaisesRegex(
+            ValueError,
+            "Requested unique column not found: account_id",
+        ):
+            analyze_csv(SAMPLE_CSV, unique_columns=["account_id"])
 
     def test_column_profiles_are_calculated(self) -> None:
         report = analyze_csv(SAMPLE_CSV)

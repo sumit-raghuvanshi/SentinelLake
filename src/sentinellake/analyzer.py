@@ -21,7 +21,10 @@ def is_valid_email(email_text: str) -> bool:
     )
 
 
-def analyze_csv(file_path: str | Path) -> dict[str, object]:
+def analyze_csv(
+    file_path: str | Path,
+    unique_columns: list[str] | None = None,
+) -> dict[str, object]:
     """Return a basic data-quality summary for a CSV file."""
     path = Path(file_path)
 
@@ -32,6 +35,15 @@ def analyze_csv(file_path: str | Path) -> dict[str, object]:
 
     if not columns:
         raise ValueError("CSV file must contain a header row.")
+
+    selected_unique_columns = []
+
+    for column in unique_columns or []:
+        if column not in columns:
+            raise ValueError(f"Requested unique column not found: {column}")
+
+        if column not in selected_unique_columns:
+            selected_unique_columns.append(column)
 
     missing_values = {
         column: sum(
@@ -97,6 +109,29 @@ def analyze_csv(file_path: str | Path) -> dict[str, object]:
         if not is_valid_email(email_text):
             invalid_emails += 1
 
+    unique_column_checks = {}
+
+    for column in selected_unique_columns:
+        value_counts = Counter(
+            (row.get(column, "") or "").strip()
+            for row in rows
+            if (row.get(column, "") or "").strip() != ""
+        )
+        duplicate_values = {
+            value: count
+            for value, count in value_counts.items()
+            if count > 1
+        }
+
+        unique_column_checks[column] = {
+            "duplicate_values": duplicate_values,
+            "duplicate_value_count": len(duplicate_values),
+            "duplicate_value_occurrences": sum(
+                count - 1
+                for count in duplicate_values.values()
+            ),
+        }
+
     return {
         "total_rows": len(rows),
         "columns": columns,
@@ -105,4 +140,5 @@ def analyze_csv(file_path: str | Path) -> dict[str, object]:
         "duplicate_rows": duplicate_rows,
         "invalid_ages": invalid_ages,
         "invalid_emails": invalid_emails,
+        "unique_column_checks": unique_column_checks,
     }

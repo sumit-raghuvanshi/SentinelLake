@@ -14,12 +14,14 @@ SentinelLake can:
 - Show a profile for every column
   - Number of non-empty values
   - Number of unique non-empty values
+- Check selected columns for repeated non-empty values
 - Validate an `age` column when it exists
   - A non-blank age must be a whole number from 0 to 120
 - Perform a basic format check for non-blank `email` values
   - This does not verify that an email account exists or can receive messages
 - Save the analysis as a JSON report file
-- Show friendly errors for missing files, folders, and invalid CSV input
+- Show friendly errors for missing files, folders, invalid CSV input, and unknown selected columns
+- Run automated tests on GitHub whenever changes are pushed to `main`
 
 ## Usage
 
@@ -27,5 +29,3 @@ From the SentinelLake project folder:
 
 ```text
 python run_analysis.py data\sample_customers.csv
-
-virtual env ".venv\Scripts\activate"
