@@ -48,6 +48,7 @@ def main() -> int:
     print(f"Columns: {', '.join(report['columns'])}")
     print(f"Duplicate rows: {report['duplicate_rows']}")
     print(f"Invalid ages: {report['invalid_ages']}")
+    print(f"Invalid emails: {report['invalid_emails']}")
     print("Missing values:")
 
     for column, count in report["missing_values"].items():

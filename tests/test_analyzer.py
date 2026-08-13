@@ -9,6 +9,7 @@ from src.sentinellake.analyzer import analyze_csv
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SAMPLE_CSV = PROJECT_ROOT / "data" / "sample_customers.csv"
 INVALID_AGES_CSV = PROJECT_ROOT / "data" / "invalid_ages.csv"
+INVALID_EMAILS_CSV = PROJECT_ROOT / "data" / "invalid_emails.csv"
 EMPTY_CSV = PROJECT_ROOT / "data" / "empty.csv"
 
 
@@ -19,6 +20,7 @@ class AnalyzeCsvTests(unittest.TestCase):
         self.assertEqual(report["total_rows"], 5)
         self.assertEqual(report["duplicate_rows"], 1)
         self.assertEqual(report["invalid_ages"], 0)
+        self.assertEqual(report["invalid_emails"], 0)
         self.assertEqual(
             report["missing_values"],
             {
@@ -35,6 +37,13 @@ class AnalyzeCsvTests(unittest.TestCase):
 
         self.assertEqual(report["total_rows"], 4)
         self.assertEqual(report["invalid_ages"], 3)
+
+    def test_invalid_emails_are_counted(self) -> None:
+        report = analyze_csv(INVALID_EMAILS_CSV)
+
+        self.assertEqual(report["total_rows"], 5)
+        self.assertEqual(report["invalid_emails"], 3)
+        self.assertEqual(report["missing_values"]["email"], 1)
 
     def test_column_profiles_are_calculated(self) -> None:
         report = analyze_csv(SAMPLE_CSV)

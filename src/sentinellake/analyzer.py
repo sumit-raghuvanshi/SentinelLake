@@ -5,6 +5,22 @@ from collections import Counter
 from pathlib import Path
 
 
+def is_valid_email(email_text: str) -> bool:
+    """Return whether text has SentinelLake's basic email format."""
+    if email_text.count("@") != 1:
+        return False
+
+    local_part, domain = email_text.split("@")
+
+    return (
+        local_part != ""
+        and domain != ""
+        and "." in domain
+        and not domain.startswith(".")
+        and not domain.endswith(".")
+    )
+
+
 def analyze_csv(file_path: str | Path) -> dict[str, object]:
     """Return a basic data-quality summary for a CSV file."""
     path = Path(file_path)
@@ -70,6 +86,17 @@ def analyze_csv(file_path: str | Path) -> dict[str, object]:
         if age < 0 or age > 120:
             invalid_ages += 1
 
+    invalid_emails = 0
+
+    for row in rows:
+        email_text = (row.get("email", "") or "").strip()
+
+        if email_text == "":
+            continue
+
+        if not is_valid_email(email_text):
+            invalid_emails += 1
+
     return {
         "total_rows": len(rows),
         "columns": columns,
@@ -77,4 +104,5 @@ def analyze_csv(file_path: str | Path) -> dict[str, object]:
         "column_profiles": column_profiles,
         "duplicate_rows": duplicate_rows,
         "invalid_ages": invalid_ages,
+        "invalid_emails": invalid_emails,
     }

@@ -16,6 +16,8 @@ SentinelLake can:
   - Number of unique non-empty values
 - Validate an `age` column when it exists
   - A non-blank age must be a whole number from 0 to 120
+- Perform a basic format check for non-blank `email` values
+  - This does not verify that an email account exists or can receive messages
 - Save the analysis as a JSON report file
 - Show friendly errors for missing files, folders, and invalid CSV input
 
