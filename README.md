@@ -1,31 +1,44 @@
-# SentinelLake
+```markdown
+# 🛡️ SentinelLake
 
 SentinelLake is a local cyber threat-intelligence data pipeline built with Python, PostgreSQL, Docker, and Apache Airflow.
 
-It ingests fictional demonstration threat feeds, converts records into one common IOC format, validates data quality, quarantines invalid records, consolidates duplicate IOCs, tracks incremental changes, and saves results in a PostgreSQL warehouse.
+It ingests fictional demonstration threat feeds, converts records into one common IOC (Indicator of Compromise) format, validates data quality, quarantines invalid records, consolidates duplicate IOCs, tracks incremental changes, and saves results in a PostgreSQL warehouse.
 
-> This is a learning project. The included feeds are fictional and are not live threat intelligence.
+> **Note:** This is a learning project. The included feeds are fictional and are not live threat intelligence.
 
-## What it currently does
+---
 
-- Ingests CSV and JSON threat-feed files
-- Normalizes different source formats into a canonical IOC record
-- Validates IPv4 addresses, domain names, timestamps, and confidence scores
-- Sends invalid records to a quarantine dataset with a reason
-- Deduplicates accepted IOCs across sources
-- Preserves source evidence and calculates source counts
-- Tracks each IOC as `new`, `changed`, or `unchanged`
-- Stores immutable snapshots for new and changed IOCs
-- Loads accepted IOCs, quarantined records, and pipeline runs into PostgreSQL
-- Calculates data-quality, quarantine, and deduplication metrics
-- Detects low-volume and high-quarantine-rate incidents
-- Stores detected incidents in PostgreSQL
-- Retries transient pipeline failures up to three times
-- Runs locally or through Docker Compose
-- Orchestrates the workflow with an Apache Airflow DAG
-- Runs automated unit tests through GitHub Actions
+## 📋 Table of Contents
+- [Features](#-features)
+- [Pipeline Flow](#-pipeline-flow)
+- [Technology Stack](#-technology-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started: Docker](#-getting-started-docker)
+- [Airflow Orchestration](#-airflow-orchestration)
+- [Local Development Setup](#-local-development-setup)
+- [Current Limitations](#-current-limitations)
+- [Documentation & License](#-documentation--license)
 
-## Pipeline flow
+---
+
+## ✨ Features
+
+- **Multi-format Ingestion:** Ingests CSV and JSON threat-feed files.
+- **Normalization:** Converts different source formats into a canonical IOC record.
+- **Strict Validation:** Validates IPv4 addresses, domain names, timestamps, and confidence scores. Sends invalid records to a quarantine dataset with a reason.
+- **Deduplication:** Deduplicates accepted IOCs across sources while preserving source evidence and calculating source counts.
+- **State Tracking:** Tracks each IOC as `new`, `changed`, or `unchanged`.
+- **Historical Snapshots:** Stores immutable snapshots for new and changed IOCs.
+- **Data Warehousing:** Loads accepted IOCs, quarantined records, and pipeline runs into PostgreSQL.
+- **Observability:** Calculates data-quality, quarantine, and deduplication metrics. Detects and stores low-volume and high-quarantine-rate incidents.
+- **Resiliency:** Retries transient pipeline failures up to three times.
+- **Flexible Execution:** Runs locally via scripts or through Docker Compose.
+- **Orchestration & CI/CD:** Orchestrates the workflow with an Apache Airflow DAG and runs automated unit tests through GitHub Actions.
+
+---
+
+## 🔄 Pipeline Flow
 
 ```text
 Apache Airflow schedule / manual trigger
@@ -50,90 +63,182 @@ PostgreSQL warehouse
         |
         v
 Observability metrics + health checks + controlled retry
-Technology
-Python 3
-PostgreSQL 18
-Docker and Docker Compose
-Apache Airflow 3.1.7
-psycopg 3
-unittest
-GitHub Actions
-Project structure
-data/demo_feeds/              Fictional input threat feeds
-dags/                         Apache Airflow DAG definitions
-docs/                         Architecture and data dictionary
-sql/                          PostgreSQL schema migrations
-src/sentinellake/             Pipeline source code
-tests/                        Automated tests
-Dockerfile                    Application container image
-Dockerfile.airflow            Airflow container image
-docker-compose.yml            Local application, database, and Airflow services
-run_resilient_pipeline.py     Pipeline runner with controlled retry
-run_incremental_check.py      Incremental IOC classifier and history writer
-run_observability_report.py   Pipeline metric report generator
-run_health_check.py           Health check and incident recorder
-load_warehouse.py             Load latest pipeline result into PostgreSQL
-Docker quick start
-Docker Desktop must be running.
-Start the PostgreSQL database and complete one-time application workflow:
+
+```
+
+---
+
+## 💻 Technology Stack
+
+* **Language:** Python 3
+* **Database:** PostgreSQL 18
+* **Containerization:** Docker and Docker Compose
+* **Orchestration:** Apache Airflow 3.1.7
+* **Database Adapter:** psycopg 3
+* **Testing:** `unittest`
+* **CI/CD:** GitHub Actions
+
+---
+
+## 📂 Project Structure
+
+```text
+.
+├── data/demo_feeds/            # Fictional input threat feeds
+├── dags/                       # Apache Airflow DAG definitions
+├── docs/                       # Architecture and data dictionary
+├── sql/                        # PostgreSQL schema migrations
+├── src/sentinellake/           # Pipeline source code
+├── tests/                      # Automated tests
+├── Dockerfile                  # Application container image
+├── Dockerfile.airflow          # Airflow container image
+├── docker-compose.yml          # Local app, database, and Airflow services
+├── run_resilient_pipeline.py   # Pipeline runner with controlled retry
+├── run_incremental_check.py    # Incremental IOC classifier and history writer
+├── run_observability_report.py # Pipeline metric report generator
+├── run_health_check.py         # Health check and incident recorder
+└── load_warehouse.py           # Load latest pipeline result into PostgreSQL
+
+```
+
+---
+
+## 🐳 Getting Started: Docker
+
+*Prerequisite: Docker Desktop must be running.*
+
+**1. Start the PostgreSQL database and complete the one-time application workflow:**
+
+```bash
 docker compose up --build
-The app container exits with code 0 after the workflow completes. This is expected. PostgreSQL remains available at port 5433.
-Run tests inside Docker:
+
+```
+
+> *Note: The app container will exit with code 0 after the workflow completes. This is expected behavior. PostgreSQL will remain available at port `5433`.*
+
+**2. Run tests inside Docker:**
+
+```bash
 docker compose run --rm app python -m unittest discover -v
-Stop Docker services:
+
+```
+
+**3. Stop Docker services:**
+
+```bash
 docker compose down
-Airflow orchestration
-Start the local Airflow service:
+
+```
+
+---
+
+## 🌬️ Airflow Orchestration
+
+**1. Start the local Airflow service:**
+
+```bash
 docker compose up -d --build airflow
-Open the Airflow UI:
-http://localhost:8080
-The local Airflow administrator password is generated during first startup. Retrieve it locally:
+
+```
+
+**2. Access the UI:**
+Open [http://localhost:8080](http://localhost:8080) in your browser.
+
+**3. Retrieve the administrator password:**
+The local Airflow administrator password is generated during the first startup. Retrieve it locally by running:
+
+```bash
 docker compose exec airflow cat /opt/airflow/simple_auth_manager_passwords.json.generated
-Do not commit or share this password.
-The DAG is named:
-sentinellake_threat_intelligence_pipeline
-It is scheduled daily at 07:00 and runs these dependent tasks:
-ingest_and_validate
-        |
-incremental_processing
-        |
-generate_observability
-        |
-health_check
-        |
-load_warehouse
-Each task has up to two Airflow-managed retries. The ingestion task also uses the project’s controlled retry logic for transient failures.
-Local setup
-Create and activate a virtual environment:
+
+```
+
+> ⚠️ **Warning:** Do not commit or share this password.
+
+**DAG Details:**
+
+* **Name:** `sentinellake_threat_intelligence_pipeline`
+* **Schedule:** Daily at `07:00`
+* **Task Flow:** `ingest_and_validate` -> `incremental_processing` -> `generate_observability` -> `health_check` -> `load_warehouse`
+* *Note: Each task has up to two Airflow-managed retries. The ingestion task also uses the project’s controlled retry logic for transient failures.*
+
+---
+
+## 🛠️ Local Development Setup
+
+**1. Create and activate a virtual environment:**
+
+```bash
+# Windows
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-Install dependencies:
+
+# macOS/Linux
+python3 -m venv .venv
+source .venv/bin/activate
+
+```
+
+**2. Install dependencies:**
+
+```bash
 python -m pip install -r requirements.txt
-Create a PostgreSQL database named sentinellake, then apply migrations:
+
+```
+
+**3. Setup the Database:**
+Create a PostgreSQL database named `sentinellake`, then apply the migrations in order:
+
+```bash
 psql -h localhost -U postgres -d sentinellake -f sql\001_create_warehouse.sql
 psql -h localhost -U postgres -d sentinellake -f sql\002_add_incremental_processing.sql
 psql -h localhost -U postgres -d sentinellake -f sql\003_add_ioc_change_history.sql
 psql -h localhost -U postgres -d sentinellake -f sql\004_add_pipeline_incidents.sql
-The local default connection is:
-postgresql://postgres@localhost:5432/sentinellake
-You can override it with the SENTINELLAKE_DATABASE_URL environment variable. Never commit a real database password.
-Run locally
+
+```
+
+> The local default connection is `postgresql://postgres@localhost:5432/sentinellake`. You can override it with the `SENTINELLAKE_DATABASE_URL` environment variable. Never commit a real database password.
+
+**4. Run the pipeline manually:**
+
+```bash
 python run_resilient_pipeline.py
 python run_incremental_check.py
 python run_observability_report.py
 python run_health_check.py
 python load_warehouse.py
-Run tests
+
+```
+
+**5. Run tests:**
+
+```bash
 python -m unittest discover -v
-Current limitations
-Uses local fictional demo feeds; it does not fetch live threat-intelligence feeds.
-Airflow runs locally in standalone mode with its local metadata store; it is not a production or high-availability Airflow deployment.
-PostgreSQL is local; cloud deployment is not implemented yet.
-Retry is limited to transient connection, file-system, and timeout errors.
-It does not currently provide an API, dashboard, Kafka, Spark, AWS S3, or cloud data warehouse.
-Documentation
-[Architecture](docs/architecture.md)
-[Data dictionary](docs/data_dictionary.md)
-[Warehouse schema](sql/001_create_warehouse.sql)
-License
-This project is for learning and portfolio demonstration.
+
+```
+
+---
+
+## 🚧 Current Limitations
+
+* Uses local fictional demo feeds; it does not fetch live threat-intelligence feeds.
+* Airflow runs locally in standalone mode with its local metadata store; it is not a production or high-availability Airflow deployment.
+* PostgreSQL is local; cloud deployment is not implemented yet.
+* Retry logic is limited to transient connection, file-system, and timeout errors.
+* It does not currently provide an API, dashboard, Kafka, Spark, AWS S3, or cloud data warehouse integrations.
+
+---
+
+## 📚 Documentation & License
+
+**Documentation:**
+
+* [Architecture](https://www.google.com/search?q=docs/architecture.md)
+* [Data Dictionary](https://www.google.com/search?q=docs/data_dictionary.md)
+* [Warehouse Schema](https://www.google.com/search?q=sql/001_create_warehouse.sql)
+
+**License:**
+This project is for learning and portfolio demonstration purposes.
+
+```
+
+```
