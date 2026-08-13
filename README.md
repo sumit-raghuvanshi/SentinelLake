@@ -17,7 +17,9 @@ SentinelLake can:
 - Check selected columns for repeated non-empty values
 - Validate an `age` column when it exists
   - A non-blank age must be a whole number from 0 to 120
+  - Show the row number and value for invalid ages
 - Perform a basic format check for non-blank `email` values
+  - Show the row number and value for invalid emails
   - This does not verify that an email account exists or can receive messages
 - Save the analysis as a JSON report file
 - Show friendly errors for missing files, folders, invalid CSV input, and unknown selected columns

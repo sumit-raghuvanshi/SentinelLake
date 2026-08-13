@@ -23,7 +23,9 @@ class AnalyzeCsvTests(unittest.TestCase):
         self.assertEqual(report["total_rows"], 5)
         self.assertEqual(report["duplicate_rows"], 1)
         self.assertEqual(report["invalid_ages"], 0)
+        self.assertEqual(report["invalid_age_details"], [])
         self.assertEqual(report["invalid_emails"], 0)
+        self.assertEqual(report["invalid_email_details"], [])
         self.assertEqual(
             report["missing_values"],
             {
@@ -40,6 +42,14 @@ class AnalyzeCsvTests(unittest.TestCase):
 
         self.assertEqual(report["total_rows"], 4)
         self.assertEqual(report["invalid_ages"], 3)
+        self.assertEqual(
+            report["invalid_age_details"],
+            [
+                {"row_number": 2, "value": "unknown"},
+                {"row_number": 3, "value": "-3"},
+                {"row_number": 4, "value": "151"},
+            ],
+        )
 
     def test_invalid_emails_are_counted(self) -> None:
         report = analyze_csv(INVALID_EMAILS_CSV)
@@ -47,6 +57,14 @@ class AnalyzeCsvTests(unittest.TestCase):
         self.assertEqual(report["total_rows"], 5)
         self.assertEqual(report["invalid_emails"], 3)
         self.assertEqual(report["missing_values"]["email"], 1)
+        self.assertEqual(
+            report["invalid_email_details"],
+            [
+                {"row_number": 2, "value": "aditi.example.com"},
+                {"row_number": 3, "value": "vikram@"},
+                {"row_number": 4, "value": "@example.com"},
+            ],
+        )
 
     def test_duplicate_values_are_found_in_selected_column(self) -> None:
         report = analyze_csv(

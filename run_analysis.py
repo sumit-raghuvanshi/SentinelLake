@@ -60,6 +60,19 @@ def main() -> int:
     print(f"Duplicate rows: {report['duplicate_rows']}")
     print(f"Invalid ages: {report['invalid_ages']}")
     print(f"Invalid emails: {report['invalid_emails']}")
+
+    if report["invalid_age_details"]:
+        print("Invalid age details:")
+
+        for issue in report["invalid_age_details"]:
+            print(f"  - Row {issue['row_number']}: {issue['value']}")
+
+    if report["invalid_email_details"]:
+        print("Invalid email details:")
+
+        for issue in report["invalid_email_details"]:
+            print(f"  - Row {issue['row_number']}: {issue['value']}")
+
     print("Missing values:")
 
     for column, count in report["missing_values"].items():

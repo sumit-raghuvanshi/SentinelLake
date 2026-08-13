@@ -81,9 +81,9 @@ def analyze_csv(
         if count > 1
     )
 
-    invalid_ages = 0
+    invalid_age_details = []
 
-    for row in rows:
+    for row_number, row in enumerate(rows, start=2):
         age_text = (row.get("age", "") or "").strip()
 
         if age_text == "":
@@ -92,22 +92,37 @@ def analyze_csv(
         try:
             age = int(age_text)
         except ValueError:
-            invalid_ages += 1
+            invalid_age_details.append(
+                {
+                    "row_number": row_number,
+                    "value": age_text,
+                }
+            )
             continue
 
         if age < 0 or age > 120:
-            invalid_ages += 1
+            invalid_age_details.append(
+                {
+                    "row_number": row_number,
+                    "value": age_text,
+                }
+            )
 
-    invalid_emails = 0
+    invalid_email_details = []
 
-    for row in rows:
+    for row_number, row in enumerate(rows, start=2):
         email_text = (row.get("email", "") or "").strip()
 
         if email_text == "":
             continue
 
         if not is_valid_email(email_text):
-            invalid_emails += 1
+            invalid_email_details.append(
+                {
+                    "row_number": row_number,
+                    "value": email_text,
+                }
+            )
 
     unique_column_checks = {}
 
@@ -138,7 +153,9 @@ def analyze_csv(
         "missing_values": missing_values,
         "column_profiles": column_profiles,
         "duplicate_rows": duplicate_rows,
-        "invalid_ages": invalid_ages,
-        "invalid_emails": invalid_emails,
+        "invalid_ages": len(invalid_age_details),
+        "invalid_age_details": invalid_age_details,
+        "invalid_emails": len(invalid_email_details),
+        "invalid_email_details": invalid_email_details,
         "unique_column_checks": unique_column_checks,
     }
