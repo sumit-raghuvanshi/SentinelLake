@@ -58,6 +58,20 @@ services:
       - ./:/opt/sentinellake
     command: standalone
 
+  spark-analytics:
+    image: spark:4.1.2-java17
+    container_name: sentinellake-spark-analytics
+    working_dir: /opt/sentinellake
+    volumes:
+      - ./:/opt/sentinellake
+    command: >
+      /opt/spark/bin/spark-submit
+      --master local[*]
+      --driver-memory 1g
+      spark_jobs/build_ioc_analytics.py
+      --input runtime/latest_run/accepted_iocs.json
+      --output runtime/spark_analytics
+
 volumes:
   sentinellake_postgres_data:
   airflow_data:

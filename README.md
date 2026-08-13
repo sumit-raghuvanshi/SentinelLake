@@ -1,7 +1,7 @@
 ```markdown
 # 🛡️ SentinelLake
 
-SentinelLake is a local cyber threat-intelligence data pipeline built with Python, PostgreSQL, Docker, and Apache Airflow.
+SentinelLake is a local cyber threat-intelligence data pipeline built with Python, PostgreSQL, Docker, Apache Airflow, and PySpark.
 
 It ingests fictional demonstration threat feeds, converts records into one common IOC (Indicator of Compromise) format, validates data quality, quarantines invalid records, consolidates duplicate IOCs, tracks incremental changes, archives run-scoped data-lake outputs, and saves results in a PostgreSQL warehouse.
 
@@ -16,10 +16,12 @@ It ingests fictional demonstration threat feeds, converts records into one commo
 - [Project Structure](#-project-structure)
 - [Local Data Lake](#-local-data-lake)
 - [Getting Started: Docker](#-getting-started-docker)
+- [PySpark Analytics](#-pyspark-analytics)
 - [Airflow Orchestration](#-airflow-orchestration)
 - [Local Development Setup](#-local-development-setup)
 - [Current Limitations](#-current-limitations)
 - [Documentation & License](#-documentation--license)
+- [Author & Disclaimer](#-author--disclaimer)
 
 ---
 
@@ -36,7 +38,8 @@ It ingests fictional demonstration threat feeds, converts records into one commo
 - **Observability:** Calculates data-quality, quarantine, and deduplication metrics. Detects and stores low-volume and high-quarantine-rate incidents.
 - **Resiliency:** Retries transient pipeline failures up to three times.
 - **Flexible Execution:** Runs locally via scripts or through Docker Compose.
-- **Orchestration & CI/CD:** Orchestrates the workflow with an Apache Airflow DAG and runs automated unit tests through GitHub Actions.
+- **Orchestration & CI/CD:** Orchestrates the Python workflow with an Apache Airflow DAG and runs automated unit tests through GitHub Actions.
+- **Big Data Processing:** Runs a PySpark analytics job over curated IOC data.
 
 ---
 
@@ -63,6 +66,8 @@ Deduplication and consolidation
         v
 Curated data-lake zone + incremental IOC history
         |
+        +--------------------> PySpark IOC analytics
+        |
         v
 PostgreSQL warehouse
         |
@@ -79,6 +84,7 @@ Observability metrics + health checks + controlled retry
 * **Database:** PostgreSQL 18
 * **Containerization:** Docker and Docker Compose
 * **Orchestration:** Apache Airflow 3.1.7
+* **Big Data Analytics:** Apache Spark 4.1.2 / PySpark
 * **Database Adapter:** psycopg 3
 * **Testing:** `unittest`
 * **CI/CD:** GitHub Actions
@@ -92,12 +98,13 @@ Observability metrics + health checks + controlled retry
 ├── data/demo_feeds/            # Fictional input threat feeds
 ├── dags/                       # Apache Airflow DAG definitions
 ├── docs/                       # Architecture and data dictionary
+├── spark_jobs/                 # PySpark analytics jobs
 ├── sql/                        # PostgreSQL schema migrations
 ├── src/sentinellake/           # Pipeline source code
 ├── tests/                      # Automated tests
 ├── Dockerfile                  # Application container image
 ├── Dockerfile.airflow          # Airflow container image
-├── docker-compose.yml          # Local app, database, and Airflow services
+├── docker-compose.yml          # Local app, database, Airflow, and Spark services
 ├── run_resilient_pipeline.py   # Pipeline runner with retry and data-lake archiving
 ├── run_incremental_check.py    # Incremental IOC classifier and history writer
 ├── run_observability_report.py # Pipeline metric report generator
@@ -127,7 +134,7 @@ runtime/data_lake/
 
 *Prerequisite: Docker Desktop must be running.*
 
-**1. Start the local services and run the one-time pipeline workflow:**
+**1. Start PostgreSQL and run the one-time application workflow:**
 
 ```bash
 docker compose up --build
@@ -149,6 +156,37 @@ docker compose run --rm app python -m unittest discover -v
 docker compose down
 
 ```
+
+---
+
+## ⚡ PySpark Analytics
+
+Run the Spark job after the pipeline has created `runtime/latest_run/accepted_iocs.json`:
+
+```bash
+docker compose run --rm spark-analytics
+
+```
+
+The Spark job reads curated accepted IOCs and writes these local analytics datasets:
+
+```text
+runtime/spark_analytics/
+├── ioc_type_counts/
+├── threat_category_counts/
+└── summary/
+
+```
+
+**It calculates:**
+
+* IOC counts by type
+* IOC counts by threat category
+* Unique IOC count
+* Average confidence score
+* Total source observations
+
+> *Note: The job uses Spark local mode inside Docker. It is not a multi-node Spark cluster.*
 
 ---
 
@@ -183,7 +221,7 @@ docker compose exec airflow cat /opt/airflow/simple_auth_manager_passwords.json.
 
 ---
 
-## 🛠️ Local Development Setup & Dependencies
+## 🛠️ Local Development Setup
 
 **1. Create and activate a virtual environment:**
 
@@ -216,8 +254,6 @@ psql -h localhost -U postgres -d sentinellake -f sql\004_add_pipeline_incidents.
 
 ```
 
-> The local default connection is `postgresql://postgres@localhost:5432/sentinellake`. You can override it with the `SENTINELLAKE_DATABASE_URL` environment variable. Never commit a real database password.
-
 **4. Run locally:**
 
 ```bash
@@ -240,12 +276,13 @@ python -m unittest discover -v
 
 ## 🚧 Current Limitations
 
-* Uses local fictional demo feeds; it does not fetch live threat-intelligence feeds.
+* Uses local fictional demo feeds; it does not fetch live threat-intelligence feeds yet.
 * The data lake is local filesystem storage; AWS S3 is not implemented yet.
-* Airflow runs locally in standalone mode with its local metadata store; it is not a production or high-availability Airflow deployment.
+* Airflow runs locally in standalone mode; it is not a production or high-availability Airflow deployment.
+* Spark runs locally in one Docker container; it is not a distributed Spark cluster.
 * PostgreSQL is local; cloud deployment is not implemented yet.
 * Retry is limited to transient connection, file-system, and timeout errors.
-* It does not currently provide an API, dashboard, Kafka, Spark, AWS S3, or cloud data warehouse integrations.
+* It does not currently provide an API, dashboard, Kafka, AWS S3, or cloud data warehouse integrations.
 
 ---
 
@@ -259,6 +296,14 @@ python -m unittest discover -v
 
 **License:**
 This project is for learning and portfolio demonstration purposes.
+
+---
+
+## 👨‍💻 Author & Disclaimer
+
+**Author:** Sumit Raghuvanshi
+
+> **🤖 AI Disclaimer:** *This README file was generated with the assistance of AI because writing all of this out manually is just too much work!*
 
 ```
 
