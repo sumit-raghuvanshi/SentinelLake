@@ -15,6 +15,8 @@ SentinelLake can:
   - Number of non-empty values
   - Number of unique non-empty values
 - Check selected columns for repeated non-empty values
+- Check selected required columns for blank values
+  - Show the row numbers with missing required values
 - Validate an `age` column when it exists
   - A non-blank age must be a whole number from 0 to 120
   - Show the row number and value for invalid ages

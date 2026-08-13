@@ -30,6 +30,14 @@ def get_arguments() -> argparse.Namespace:
         help="Check that non-empty values in this column are unique. "
         "Use this option again for each additional column.",
     )
+    parser.add_argument(
+        "--required-column",
+        action="append",
+        default=[],
+        metavar="COLUMN",
+        help="Check that this column has no blank values. "
+        "Use this option again for each additional column.",
+    )
     return parser.parse_args()
 
 
@@ -41,6 +49,7 @@ def main() -> int:
         report = analyze_csv(
             args.csv_file,
             unique_columns=args.unique_column,
+            required_columns=args.required_column,
         )
     except FileNotFoundError:
         print(f"Error: CSV file not found: {args.csv_file}")
@@ -99,6 +108,22 @@ def main() -> int:
 
             for value, count in check["duplicate_values"].items():
                 print(f"    - {value}: {count} rows")
+
+    if report["required_column_checks"]:
+        print("Required column checks:")
+
+        for column, check in report["required_column_checks"].items():
+            print(
+                f"  - {column}: "
+                f"{check['missing_value_count']} missing required value(s)"
+            )
+
+            if check["missing_row_numbers"]:
+                row_numbers = ", ".join(
+                    str(row_number)
+                    for row_number in check["missing_row_numbers"]
+                )
+                print(f"    - Rows: {row_numbers}")
 
     if args.output is not None:
         saved_path = write_json_report(report, args.output)

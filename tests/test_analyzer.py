@@ -13,6 +13,9 @@ INVALID_EMAILS_CSV = PROJECT_ROOT / "data" / "invalid_emails.csv"
 DUPLICATE_CUSTOMER_IDS_CSV = (
     PROJECT_ROOT / "data" / "duplicate_customer_ids.csv"
 )
+MISSING_REQUIRED_VALUES_CSV = (
+    PROJECT_ROOT / "data" / "missing_required_values.csv"
+)
 EMPTY_CSV = PROJECT_ROOT / "data" / "empty.csv"
 
 
@@ -26,6 +29,7 @@ class AnalyzeCsvTests(unittest.TestCase):
         self.assertEqual(report["invalid_age_details"], [])
         self.assertEqual(report["invalid_emails"], 0)
         self.assertEqual(report["invalid_email_details"], [])
+        self.assertEqual(report["required_column_checks"], {})
         self.assertEqual(
             report["missing_values"],
             {
@@ -88,6 +92,33 @@ class AnalyzeCsvTests(unittest.TestCase):
             "Requested unique column not found: account_id",
         ):
             analyze_csv(SAMPLE_CSV, unique_columns=["account_id"])
+
+    def test_required_columns_are_checked(self) -> None:
+        report = analyze_csv(
+            MISSING_REQUIRED_VALUES_CSV,
+            required_columns=["name", "email"],
+        )
+
+        self.assertEqual(
+            report["required_column_checks"],
+            {
+                "name": {
+                    "missing_value_count": 1,
+                    "missing_row_numbers": [3],
+                },
+                "email": {
+                    "missing_value_count": 1,
+                    "missing_row_numbers": [2],
+                },
+            },
+        )
+
+    def test_unknown_required_column_is_rejected(self) -> None:
+        with self.assertRaisesRegex(
+            ValueError,
+            "Requested required column not found: account_id",
+        ):
+            analyze_csv(SAMPLE_CSV, required_columns=["account_id"])
 
     def test_column_profiles_are_calculated(self) -> None:
         report = analyze_csv(SAMPLE_CSV)

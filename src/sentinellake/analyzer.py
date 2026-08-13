@@ -24,6 +24,7 @@ def is_valid_email(email_text: str) -> bool:
 def analyze_csv(
     file_path: str | Path,
     unique_columns: list[str] | None = None,
+    required_columns: list[str] | None = None,
 ) -> dict[str, object]:
     """Return a basic data-quality summary for a CSV file."""
     path = Path(file_path)
@@ -44,6 +45,15 @@ def analyze_csv(
 
         if column not in selected_unique_columns:
             selected_unique_columns.append(column)
+
+    selected_required_columns = []
+
+    for column in required_columns or []:
+        if column not in columns:
+            raise ValueError(f"Requested required column not found: {column}")
+
+        if column not in selected_required_columns:
+            selected_required_columns.append(column)
 
     missing_values = {
         column: sum(
@@ -147,6 +157,20 @@ def analyze_csv(
             ),
         }
 
+    required_column_checks = {}
+
+    for column in selected_required_columns:
+        missing_row_numbers = [
+            row_number
+            for row_number, row in enumerate(rows, start=2)
+            if (row.get(column, "") or "").strip() == ""
+        ]
+
+        required_column_checks[column] = {
+            "missing_value_count": len(missing_row_numbers),
+            "missing_row_numbers": missing_row_numbers,
+        }
+
     return {
         "total_rows": len(rows),
         "columns": columns,
@@ -158,4 +182,5 @@ def analyze_csv(
         "invalid_emails": len(invalid_email_details),
         "invalid_email_details": invalid_email_details,
         "unique_column_checks": unique_column_checks,
+        "required_column_checks": required_column_checks,
     }
