@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: sentinellake-postgres
+    environment:
+      POSTGRES_DB: sentinellake
+      POSTGRES_USER: sentinellake
+      POSTGRES_PASSWORD: sentinellake_dev_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - sentinellake_postgres_data:/var/lib/postgresql
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U sentinellake -d sentinellake"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: sentinellake-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SENTINELLAKE_DATABASE_URL: postgresql://sentinellake:sentinellake_dev_password@postgres:5432/sentinellake
+    volumes:
+      - ./runtime:/app/runtime
+    command: >
+      sh -c "python run_resilient_pipeline.py &&
+      python run_incremental_check.py &&
+      python run_observability_report.py &&
+      python run_health_check.py &&
+      python load_warehouse.py"
+
+volumes:
+  sentinellake_postgres_data:
