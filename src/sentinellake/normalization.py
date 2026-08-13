@@ -93,6 +93,26 @@ def normalize_demo_domain_feed(
     )
 
 
+def normalize_demo_community_feed(
+    source_record: dict[str, object],
+    ingested_at: str,
+) -> dict[str, object]:
+    """Normalize a record from the community IOC JSON feed."""
+    raw_record = source_record["raw_record"]
+
+    return build_canonical_record(
+        source_record,
+        ioc_type=str(raw_record.get("indicator_kind") or "").strip(),
+        ioc_value=raw_record.get("value"),
+        threat_category=raw_record.get("threat_label"),
+        confidence_score=raw_record.get("reputation"),
+        first_seen=raw_record.get("seen_at"),
+        last_seen=raw_record.get("seen_at"),
+        source_record_id=raw_record.get("reference_id"),
+        ingested_at=ingested_at,
+    )
+
+
 def normalize_record(
     source_record: dict[str, object],
     ingested_at: str | None = None,
@@ -106,5 +126,8 @@ def normalize_record(
 
     if source_name == "demo_domain_feed":
         return normalize_demo_domain_feed(source_record, timestamp)
+
+    if source_name == "demo_community_feed":
+        return normalize_demo_community_feed(source_record, timestamp)
 
     raise ValueError(f"Unsupported threat-feed source: {source_name}")

@@ -24,6 +24,12 @@ def get_arguments() -> argparse.Namespace:
         help="Path to the demo JSON domain threat feed.",
     )
     parser.add_argument(
+        "--community-feed",
+        type=Path,
+        default=Path("data/demo_feeds/community_ioc_feed.json"),
+        help="Path to the demo community IOC JSON feed.",
+    )
+    parser.add_argument(
         "--output-dir",
         type=Path,
         default=Path("runtime/latest_run"),
@@ -40,6 +46,7 @@ def main() -> int:
         summary = run_local_pipeline(
             args.ip_feed,
             args.domain_feed,
+            args.community_feed,
             args.output_dir,
         )
     except FileNotFoundError as error:
@@ -53,7 +60,15 @@ def main() -> int:
     print("-" * 42)
     print(f"Sources processed: {summary['source_count']}")
     print(f"Records ingested: {summary['records_ingested']}")
-    print(f"Records accepted: {summary['records_accepted']}")
+    print(
+        "Accepted before deduplication: "
+        f"{summary['records_accepted_before_deduplication']}"
+    )
+    print(f"Unique IOCs accepted: {summary['unique_iocs_accepted']}")
+    print(
+        "Duplicate IOC records consolidated: "
+        f"{summary['duplicate_ioc_records_consolidated']}"
+    )
     print(f"Records quarantined: {summary['records_quarantined']}")
     print(
         "Processing duration (ms): "

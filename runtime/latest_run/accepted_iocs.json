@@ -3,12 +3,12 @@
     "ioc_type": "ipv4",
     "ioc_value": "185.220.101.34",
     "threat_category": "malware",
-    "confidence_score": 85,
+    "confidence_score": 90,
     "first_seen": "2026-08-13T08:00:00Z",
-    "last_seen": "2026-08-13T09:00:00Z",
+    "last_seen": "2026-08-13T09:15:00Z",
     "source_name": "demo_ip_feed",
     "source_record_id": "ip-1001",
-    "ingested_at": "2026-08-13T08:50:58.554882Z",
+    "ingested_at": "2026-08-13T08:56:52.389785Z",
     "raw_record": {
       "indicator": "185.220.101.34",
       "category": "malware",
@@ -18,7 +18,47 @@
       "feed_id": "ip-1001"
     },
     "validation_status": "accepted",
-    "quarantine_reason": null
+    "quarantine_reason": null,
+    "source_count": 2,
+    "source_names": [
+      "demo_ip_feed",
+      "demo_community_feed"
+    ],
+    "source_record_ids": [
+      "ip-1001",
+      "community-3001"
+    ],
+    "source_evidence": [
+      {
+        "source_name": "demo_ip_feed",
+        "source_record_id": "ip-1001",
+        "raw_record": {
+          "indicator": "185.220.101.34",
+          "category": "malware",
+          "confidence": "85",
+          "first_observed": "2026-08-13T08:00:00Z",
+          "last_observed": "2026-08-13T09:00:00Z",
+          "feed_id": "ip-1001"
+        }
+      },
+      {
+        "source_name": "demo_community_feed",
+        "source_record_id": "community-3001",
+        "raw_record": {
+          "indicator_kind": "ipv4",
+          "value": "185.220.101.34",
+          "threat_label": "ransomware",
+          "reputation": 90,
+          "seen_at": "2026-08-13T09:15:00Z",
+          "reference_id": "community-3001"
+        }
+      }
+    ],
+    "threat_categories": [
+      "malware",
+      "ransomware"
+    ],
+    "record_count_before_deduplication": 2
   },
   {
     "ioc_type": "ipv4",
@@ -29,7 +69,7 @@
     "last_seen": "2026-08-13T09:00:00Z",
     "source_name": "demo_ip_feed",
     "source_record_id": "ip-1002",
-    "ingested_at": "2026-08-13T08:50:58.554896Z",
+    "ingested_at": "2026-08-13T08:56:52.389800Z",
     "raw_record": {
       "indicator": "45.155.205.233",
       "category": "botnet",
@@ -39,7 +79,32 @@
       "feed_id": "ip-1002"
     },
     "validation_status": "accepted",
-    "quarantine_reason": null
+    "quarantine_reason": null,
+    "source_count": 1,
+    "source_names": [
+      "demo_ip_feed"
+    ],
+    "source_record_ids": [
+      "ip-1002"
+    ],
+    "source_evidence": [
+      {
+        "source_name": "demo_ip_feed",
+        "source_record_id": "ip-1002",
+        "raw_record": {
+          "indicator": "45.155.205.233",
+          "category": "botnet",
+          "confidence": "70",
+          "first_observed": "2026-08-13T07:00:00Z",
+          "last_observed": "2026-08-13T09:00:00Z",
+          "feed_id": "ip-1002"
+        }
+      }
+    ],
+    "threat_categories": [
+      "botnet"
+    ],
+    "record_count_before_deduplication": 1
   },
   {
     "ioc_type": "domain",
@@ -47,10 +112,10 @@
     "threat_category": "phishing",
     "confidence_score": 92,
     "first_seen": "2026-08-13T08:30:00Z",
-    "last_seen": "2026-08-13T09:10:00Z",
+    "last_seen": "2026-08-13T09:20:00Z",
     "source_name": "demo_domain_feed",
     "source_record_id": "domain-2001",
-    "ingested_at": "2026-08-13T08:50:58.554905Z",
+    "ingested_at": "2026-08-13T08:56:52.389807Z",
     "raw_record": {
       "domain": "evil-example.net",
       "classification": "phishing",
@@ -60,7 +125,46 @@
       "id": "domain-2001"
     },
     "validation_status": "accepted",
-    "quarantine_reason": null
+    "quarantine_reason": null,
+    "source_count": 2,
+    "source_names": [
+      "demo_domain_feed",
+      "demo_community_feed"
+    ],
+    "source_record_ids": [
+      "domain-2001",
+      "community-3002"
+    ],
+    "source_evidence": [
+      {
+        "source_name": "demo_domain_feed",
+        "source_record_id": "domain-2001",
+        "raw_record": {
+          "domain": "evil-example.net",
+          "classification": "phishing",
+          "score": 92,
+          "first_seen_at": "2026-08-13T08:30:00Z",
+          "last_seen_at": "2026-08-13T09:10:00Z",
+          "id": "domain-2001"
+        }
+      },
+      {
+        "source_name": "demo_community_feed",
+        "source_record_id": "community-3002",
+        "raw_record": {
+          "indicator_kind": "domain",
+          "value": "evil-example.net",
+          "threat_label": "phishing",
+          "reputation": 88,
+          "seen_at": "2026-08-13T09:20:00Z",
+          "reference_id": "community-3002"
+        }
+      }
+    ],
+    "threat_categories": [
+      "phishing"
+    ],
+    "record_count_before_deduplication": 2
   },
   {
     "ioc_type": "domain",
@@ -71,7 +175,7 @@
     "last_seen": "2026-08-13T09:05:00Z",
     "source_name": "demo_domain_feed",
     "source_record_id": "domain-2002",
-    "ingested_at": "2026-08-13T08:50:58.554908Z",
+    "ingested_at": "2026-08-13T08:56:52.389810Z",
     "raw_record": {
       "domain": "malware-download.org",
       "classification": "malware",
@@ -81,6 +185,77 @@
       "id": "domain-2002"
     },
     "validation_status": "accepted",
-    "quarantine_reason": null
+    "quarantine_reason": null,
+    "source_count": 1,
+    "source_names": [
+      "demo_domain_feed"
+    ],
+    "source_record_ids": [
+      "domain-2002"
+    ],
+    "source_evidence": [
+      {
+        "source_name": "demo_domain_feed",
+        "source_record_id": "domain-2002",
+        "raw_record": {
+          "domain": "malware-download.org",
+          "classification": "malware",
+          "score": 78,
+          "first_seen_at": "2026-08-13T07:30:00Z",
+          "last_seen_at": "2026-08-13T09:05:00Z",
+          "id": "domain-2002"
+        }
+      }
+    ],
+    "threat_categories": [
+      "malware"
+    ],
+    "record_count_before_deduplication": 1
+  },
+  {
+    "ioc_type": "domain",
+    "ioc_value": "suspicious-shop.co",
+    "threat_category": "fraud",
+    "confidence_score": 65,
+    "first_seen": "2026-08-13T09:25:00Z",
+    "last_seen": "2026-08-13T09:25:00Z",
+    "source_name": "demo_community_feed",
+    "source_record_id": "community-3003",
+    "ingested_at": "2026-08-13T08:56:52.389820Z",
+    "raw_record": {
+      "indicator_kind": "domain",
+      "value": "suspicious-shop.co",
+      "threat_label": "fraud",
+      "reputation": 65,
+      "seen_at": "2026-08-13T09:25:00Z",
+      "reference_id": "community-3003"
+    },
+    "validation_status": "accepted",
+    "quarantine_reason": null,
+    "source_count": 1,
+    "source_names": [
+      "demo_community_feed"
+    ],
+    "source_record_ids": [
+      "community-3003"
+    ],
+    "source_evidence": [
+      {
+        "source_name": "demo_community_feed",
+        "source_record_id": "community-3003",
+        "raw_record": {
+          "indicator_kind": "domain",
+          "value": "suspicious-shop.co",
+          "threat_label": "fraud",
+          "reputation": 65,
+          "seen_at": "2026-08-13T09:25:00Z",
+          "reference_id": "community-3003"
+        }
+      }
+    ],
+    "threat_categories": [
+      "fraud"
+    ],
+    "record_count_before_deduplication": 1
   }
 ]

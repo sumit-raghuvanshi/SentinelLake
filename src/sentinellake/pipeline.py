@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from time import perf_counter
 
+from src.sentinellake.deduplication import deduplicate_accepted_records
 from src.sentinellake.ingestion import load_csv_feed, load_json_feed
 from src.sentinellake.normalization import normalize_record
 from src.sentinellake.quarantine import split_validated_records, write_json_records
@@ -27,10 +28,11 @@ def write_pipeline_summary(
 def run_local_pipeline(
     ip_feed_path: str | Path,
     domain_feed_path: str | Path,
+    community_feed_path: str | Path,
     output_directory: str | Path,
     ingested_at: str | None = None,
 ) -> dict[str, object]:
-    """Ingest, normalize, validate, and route two demo threat feeds."""
+    """Ingest, normalize, validate, deduplicate, and route demo feeds."""
     started_at = perf_counter()
     output_path = Path(output_directory)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -40,7 +42,15 @@ def run_local_pipeline(
         domain_feed_path,
         "demo_domain_feed",
     )
-    source_records = ip_source_records + domain_source_records
+    community_source_records = load_json_feed(
+        community_feed_path,
+        "demo_community_feed",
+    )
+    source_records = (
+        ip_source_records
+        + domain_source_records
+        + community_source_records
+    )
 
     normalized_records = [
         normalize_record(record, ingested_at)
@@ -53,9 +63,10 @@ def run_local_pipeline(
     accepted_records, quarantined_records = split_validated_records(
         validated_records
     )
+    consolidated_records = deduplicate_accepted_records(accepted_records)
 
     accepted_output_path = write_json_records(
-        accepted_records,
+        consolidated_records,
         output_path / "accepted_iocs.json",
     )
     quarantine_output_path = write_json_records(
@@ -68,9 +79,13 @@ def run_local_pipeline(
         2,
     )
     summary = {
-        "source_count": 2,
+        "source_count": 3,
         "records_ingested": len(source_records),
-        "records_accepted": len(accepted_records),
+        "records_accepted_before_deduplication": len(accepted_records),
+        "unique_iocs_accepted": len(consolidated_records),
+        "duplicate_ioc_records_consolidated": (
+            len(accepted_records) - len(consolidated_records)
+        ),
         "records_quarantined": len(quarantined_records),
         "processing_duration_milliseconds": duration_milliseconds,
         "accepted_output_path": str(accepted_output_path),

@@ -1,0 +1,26 @@
+[
+  {
+    "indicator_kind": "ipv4",
+    "value": "185.220.101.34",
+    "threat_label": "ransomware",
+    "reputation": 90,
+    "seen_at": "2026-08-13T09:15:00Z",
+    "reference_id": "community-3001"
+  },
+  {
+    "indicator_kind": "domain",
+    "value": "evil-example.net",
+    "threat_label": "phishing",
+    "reputation": 88,
+    "seen_at": "2026-08-13T09:20:00Z",
+    "reference_id": "community-3002"
+  },
+  {
+    "indicator_kind": "domain",
+    "value": "suspicious-shop.co",
+    "threat_label": "fraud",
+    "reputation": 65,
+    "seen_at": "2026-08-13T09:25:00Z",
+    "reference_id": "community-3003"
+  }
+]

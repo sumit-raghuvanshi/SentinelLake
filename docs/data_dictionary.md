@@ -2,61 +2,58 @@
 
 ## Purpose
 
-Every threat-intelligence source uses different column names and formats. SentinelLake converts source records into this canonical Indicator of Compromise (IOC) schema before validation and storage.
+Threat-intelligence sources use different schemas and formats. SentinelLake converts them into one canonical Indicator of Compromise (IOC) schema before validation, quarantine routing, and deduplication.
 
 ## Canonical IOC fields
 
-| Field | Type | Required | Description | Example |
-|---|---|---:|---|---|
-| `ioc_type` | string | Yes | Indicator category | `ipv4`, `domain`, `url`, `sha256` |
-| `ioc_value` | string | Yes | Normalized indicator value | `185.220.101.34` |
-| `threat_category` | string | No | Threat classification supplied by the source | `malware` |
-| `confidence_score` | integer | No | Source confidence score from 0 to 100 | `85` |
-| `first_seen` | ISO 8601 timestamp | No | Earliest known observation time | `2026-08-13T08:00:00Z` |
-| `last_seen` | ISO 8601 timestamp | No | Most recent known observation time | `2026-08-13T09:00:00Z` |
-| `source_name` | string | Yes | Name of the threat feed | `abuse_ch_feed` |
-| `source_record_id` | string | No | Source-specific identifier, if available | `feed-1001` |
-| `ingested_at` | ISO 8601 timestamp | Yes | Time SentinelLake received the record | `2026-08-13T10:00:00Z` |
-| `raw_record` | object | Yes | Original source record for traceability | Source JSON object |
-| `validation_status` | string | Yes | Processing result | `accepted` or `quarantined` |
-| `quarantine_reason` | string | No | Reason for rejection | `invalid_ipv4_format` |
+| Field | Type | Required | Description |
+|---|---|---:|---|
+| `ioc_type` | string | Yes | IOC category: `ipv4`, `domain`, `url`, or `sha256` |
+| `ioc_value` | string | Yes | Normalized indicator value |
+| `threat_category` | string | No | Threat category from the first source record |
+| `confidence_score` | integer | No | Confidence score from 0 to 100 |
+| `first_seen` | ISO 8601 timestamp | No | Earliest known observation time |
+| `last_seen` | ISO 8601 timestamp | No | Most recent known observation time |
+| `source_name` | string | Yes | Name of the first source that supplied the IOC |
+| `source_record_id` | string | No | Source identifier from the first source record |
+| `ingested_at` | ISO 8601 timestamp | Yes | Time SentinelLake processed the record |
+| `raw_record` | object | Yes | First original source record |
+| `validation_status` | string | Yes | `accepted` or `quarantined` |
+| `quarantine_reason` | string | No | Rejection reason for quarantined records |
 
-## Supported IOC types in the first MVP
+## Consolidated IOC fields
 
-- `ipv4`
-- `domain`
-- `url`
-- `sha256`
+These fields are added after deduplication when the same IOC is found in more than one accepted source record.
+
+| Field | Type | Description |
+|---|---|---|
+| `source_count` | integer | Number of distinct sources that reported the IOC |
+| `source_names` | array | Distinct source names that reported the IOC |
+| `source_record_ids` | array | Source record identifiers associated with the IOC |
+| `source_evidence` | array | Source name, source record ID, and raw record from every source |
+| `threat_categories` | array | All observed non-blank threat categories |
+| `record_count_before_deduplication` | integer | Number of accepted source records consolidated into this IOC |
 
 ## Validation rules
 
 | Rule | Result if invalid |
 |---|---|
-| `ioc_type` is missing or unsupported | Quarantine record |
-| `ioc_value` is blank | Quarantine record |
-| IPv4 value is not a valid IPv4 address | Quarantine record |
-| Domain value is incorrectly formatted | Quarantine record |
-| URL value is incorrectly formatted | Quarantine record |
-| SHA-256 hash is not exactly 64 hexadecimal characters | Quarantine record |
-| `confidence_score` is present but outside 0 to 100 | Quarantine record |
-| `source_name` is blank | Quarantine record |
+| Unsupported or missing IOC type | Quarantine record |
+| Missing IOC value | Quarantine record |
+| Invalid IPv4 address | Quarantine record |
+| Invalid domain format | Quarantine record |
+| Invalid URL format | Quarantine record |
+| Invalid SHA-256 format | Quarantine record |
+| Missing source name or ingestion timestamp | Quarantine record |
+| Confidence score outside 0 to 100 | Quarantine record |
 
-## Example accepted record
+## Demo deduplication example
 
-```json
-{
-  "ioc_type": "ipv4",
-  "ioc_value": "185.220.101.34",
-  "threat_category": "malware",
-  "confidence_score": 85,
-  "first_seen": "2026-08-13T08:00:00Z",
-  "last_seen": "2026-08-13T09:00:00Z",
-  "source_name": "demo_ip_feed",
-  "source_record_id": "ip-1001",
-  "ingested_at": "2026-08-13T10:00:00Z",
-  "raw_record": {
-    "ip_address": "185.220.101.34",
-    "category": "malware",
-    "confidence": "85"
-  },
-  "validation_status": "accepted",
+`185.220.101.34` appears in both `demo_ip_feed` and `demo_community_feed`.
+
+After deduplication, SentinelLake stores one accepted IOC with:
+
+- `source_count`: `2`
+- Both source names and raw records in `source_evidence`
+- Highest confidence score: `90`
+- Both categories: `malware` and `ransomware`

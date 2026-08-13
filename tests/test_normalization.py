@@ -12,6 +12,9 @@ IP_FEED = PROJECT_ROOT / "data" / "demo_feeds" / "ip_reputation_feed.csv"
 DOMAIN_FEED = (
     PROJECT_ROOT / "data" / "demo_feeds" / "domain_watchlist_feed.json"
 )
+COMMUNITY_FEED = (
+    PROJECT_ROOT / "data" / "demo_feeds" / "community_ioc_feed.json"
+)
 INGESTED_AT = "2026-08-13T10:00:00Z"
 
 
@@ -41,6 +44,21 @@ class ThreatFeedNormalizationTests(unittest.TestCase):
         self.assertEqual(record["confidence_score"], 92)
         self.assertEqual(record["source_name"], "demo_domain_feed")
         self.assertEqual(record["source_record_id"], "domain-2001")
+
+    def test_community_feed_record_is_normalized(self) -> None:
+        source_record = load_json_feed(
+            COMMUNITY_FEED,
+            "demo_community_feed",
+        )[0]
+
+        record = normalize_record(source_record, INGESTED_AT)
+
+        self.assertEqual(record["ioc_type"], "ipv4")
+        self.assertEqual(record["ioc_value"], "185.220.101.34")
+        self.assertEqual(record["threat_category"], "ransomware")
+        self.assertEqual(record["confidence_score"], 90)
+        self.assertEqual(record["source_name"], "demo_community_feed")
+        self.assertEqual(record["source_record_id"], "community-3001")
 
     def test_unknown_source_is_rejected(self) -> None:
         source_record = {
