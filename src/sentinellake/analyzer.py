@@ -14,6 +14,9 @@ def analyze_csv(file_path: str | Path) -> dict[str, object]:
         columns = reader.fieldnames or []
         rows = list(reader)
 
+    if not columns:
+        raise ValueError("CSV file must contain a header row.")
+
     missing_values = {
         column: sum(
             (row.get(column, "") or "").strip() == ""

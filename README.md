@@ -7,6 +7,7 @@ SentinelLake is a beginner-friendly Python tool for checking the quality of CSV 
 SentinelLake can:
 
 - Read a UTF-8, comma-separated CSV file with a header row
+- Reject an empty CSV file or a CSV file without a header row
 - Show the total number of rows and column names
 - Count blank values in every column
 - Count exact duplicate rows
@@ -16,7 +17,7 @@ SentinelLake can:
 - Validate an `age` column when it exists
   - A non-blank age must be a whole number from 0 to 120
 - Save the analysis as a JSON report file
-- Show a friendly error when the CSV file path does not exist
+- Show friendly errors for missing files, folders, and invalid CSV input
 
 ## Usage
 

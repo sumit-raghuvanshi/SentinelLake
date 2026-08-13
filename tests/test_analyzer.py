@@ -9,6 +9,7 @@ from src.sentinellake.analyzer import analyze_csv
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SAMPLE_CSV = PROJECT_ROOT / "data" / "sample_customers.csv"
 INVALID_AGES_CSV = PROJECT_ROOT / "data" / "invalid_ages.csv"
+EMPTY_CSV = PROJECT_ROOT / "data" / "empty.csv"
 
 
 class AnalyzeCsvTests(unittest.TestCase):
@@ -52,6 +53,13 @@ class AnalyzeCsvTests(unittest.TestCase):
                 "unique_non_empty_values": 3,
             },
         )
+
+    def test_empty_csv_without_a_header_is_rejected(self) -> None:
+        with self.assertRaisesRegex(
+            ValueError,
+            "CSV file must contain a header row.",
+        ):
+            analyze_csv(EMPTY_CSV)
 
 
 if __name__ == "__main__":

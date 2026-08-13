@@ -37,6 +37,9 @@ def main() -> int:
     except IsADirectoryError:
         print(f"Error: expected a file, but received a folder: {args.csv_file}")
         return 1
+    except ValueError as error:
+        print(f"Error: invalid CSV file: {error}")
+        return 1
 
     print("SentinelLake Data Quality Report")
     print("-" * 34)
