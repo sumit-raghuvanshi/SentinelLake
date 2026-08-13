@@ -171,6 +171,23 @@ def analyze_csv(
             "missing_row_numbers": missing_row_numbers,
         }
 
+    issue_summary = {
+        "duplicate_row_count": duplicate_rows,
+        "invalid_age_count": len(invalid_age_details),
+        "invalid_email_count": len(invalid_email_details),
+        "selected_duplicate_value_occurrences": sum(
+            check["duplicate_value_occurrences"]
+            for check in unique_column_checks.values()
+        ),
+        "missing_required_value_count": sum(
+            check["missing_value_count"]
+            for check in required_column_checks.values()
+        ),
+    }
+    issue_summary["total_rule_violation_count"] = sum(
+        issue_summary.values()
+    )
+
     return {
         "total_rows": len(rows),
         "columns": columns,
@@ -183,4 +200,5 @@ def analyze_csv(
         "invalid_email_details": invalid_email_details,
         "unique_column_checks": unique_column_checks,
         "required_column_checks": required_column_checks,
+        "issue_summary": issue_summary,
     }

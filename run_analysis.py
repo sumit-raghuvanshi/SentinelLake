@@ -38,6 +38,12 @@ def get_arguments() -> argparse.Namespace:
         help="Check that this column has no blank values. "
         "Use this option again for each additional column.",
     )
+    parser.add_argument(
+        "--fail-on-issues",
+        action="store_true",
+        help="Return failure exit code 1 when selected validation rules "
+        "find one or more issues.",
+    )
     return parser.parse_args()
 
 
@@ -125,10 +131,23 @@ def main() -> int:
                 )
                 print(f"    - Rows: {row_numbers}")
 
+    print(
+        "Detected rule violations: "
+        f"{report['issue_summary']['total_rule_violation_count']}"
+    )
+
     if args.output is not None:
         saved_path = write_json_report(report, args.output)
         print(f"JSON report saved: {saved_path}")
 
+    if (
+        args.fail_on_issues
+        and report["issue_summary"]["total_rule_violation_count"] > 0
+    ):
+        print("Result: failed because rule violations were detected.")
+        return 1
+
+    print("Result: analysis completed.")
     return 0
 
 

@@ -31,6 +31,10 @@ class AnalyzeCsvTests(unittest.TestCase):
         self.assertEqual(report["invalid_email_details"], [])
         self.assertEqual(report["required_column_checks"], {})
         self.assertEqual(
+            report["issue_summary"]["total_rule_violation_count"],
+            1,
+        )
+        self.assertEqual(
             report["missing_values"],
             {
                 "customer_id": 0,
@@ -53,6 +57,10 @@ class AnalyzeCsvTests(unittest.TestCase):
                 {"row_number": 3, "value": "-3"},
                 {"row_number": 4, "value": "151"},
             ],
+        )
+        self.assertEqual(
+            report["issue_summary"]["total_rule_violation_count"],
+            3,
         )
 
     def test_invalid_emails_are_counted(self) -> None:
@@ -85,6 +93,10 @@ class AnalyzeCsvTests(unittest.TestCase):
                 "duplicate_value_occurrences": 1,
             },
         )
+        self.assertEqual(
+            report["issue_summary"]["total_rule_violation_count"],
+            1,
+        )
 
     def test_unknown_unique_column_is_rejected(self) -> None:
         with self.assertRaisesRegex(
@@ -111,6 +123,10 @@ class AnalyzeCsvTests(unittest.TestCase):
                     "missing_row_numbers": [2],
                 },
             },
+        )
+        self.assertEqual(
+            report["issue_summary"]["total_rule_violation_count"],
+            2,
         )
 
     def test_unknown_required_column_is_rejected(self) -> None:
