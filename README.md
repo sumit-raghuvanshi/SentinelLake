@@ -27,7 +27,9 @@ It ingests fictional demonstration threat feeds, converts records into one commo
 
 ## ✨ Features
 
-- **Multi-format Ingestion:** Ingests CSV and JSON threat-feed files.
+- **Multi-format Ingestion:** Ingests local CSV and JSON threat-feed files.
+- **Optional URLhaus Raw Download:** Downloads URLhaus's recent CSV into local raw storage when a user supplies a local Auth-Key. The key is neither committed nor saved to the manifest.
+
 - **Normalization:** Converts different source formats into a canonical IOC record.
 - **Strict Validation:** Validates IPv4 addresses, domain names, timestamps, and confidence scores. Sends invalid records to a quarantine dataset with a reason.
 - **Deduplication:** Deduplicates accepted IOCs across sources while preserving source evidence and calculating source counts.
@@ -276,7 +278,7 @@ python -m unittest discover -v
 
 ## 🚧 Current Limitations
 
-* Uses local fictional demo feeds; it does not fetch live threat-intelligence feeds yet.
+* Default pipeline inputs are local fictional demo feeds. An optional manual URLhaus recent-CSV download is available with a user-supplied Auth-Key, but it is not scheduled or automatically processed by the pipeline.
 * The data lake is local filesystem storage; AWS S3 is not implemented yet.
 * Airflow runs locally in standalone mode; it is not a production or high-availability Airflow deployment.
 * Spark runs locally in one Docker container; it is not a distributed Spark cluster.
