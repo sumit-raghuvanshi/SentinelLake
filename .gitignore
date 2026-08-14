@@ -5,6 +5,7 @@ __pycache__/
 reports/
 
 runtime/data_lake/
+runtime/latest_run/
 runtime/live_feeds/
 runtime/logs/
 runtime/spark_analytics/
