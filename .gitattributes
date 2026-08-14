@@ -1,0 +1,5 @@
+# Include project database migrations and configuration files in GitHub's
+# language statistics. SentinelLake uses both as authored project assets.
+*.sql linguist-detectable=true
+*.yml linguist-detectable=true
+*.yaml linguist-detectable=true
