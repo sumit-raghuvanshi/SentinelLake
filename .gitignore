@@ -3,3 +3,8 @@ __pycache__/
 *.py[cod]
 .env
 reports/
+
+runtime/data_lake/
+runtime/live_feeds/
+runtime/logs/
+runtime/spark_analytics/
